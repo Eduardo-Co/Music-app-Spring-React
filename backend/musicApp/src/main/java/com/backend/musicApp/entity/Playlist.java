@@ -1,10 +1,14 @@
 package com.backend.musicApp.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Playlist")
+@Table(name = "Playlist") @Getter
+@Setter
 public class Playlist {
 
     @Id
@@ -24,10 +28,4 @@ public class Playlist {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // Getters and Setters
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
 }

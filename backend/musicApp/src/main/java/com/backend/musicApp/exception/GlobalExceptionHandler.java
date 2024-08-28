@@ -1,5 +1,6 @@
 package com.backend.musicApp.exception;
 
+import com.backend.musicApp.dto.ErrorResourceAlreadyExistsDto;
 import com.backend.musicApp.dto.ErrorResponseDto;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -59,10 +60,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
         return new ResponseEntity<>(errorResponseDTO, HttpStatus.NOT_FOUND);
     }
-    @ExceptionHandler(ResourceAlreadyExistisException.class)
-    public ResponseEntity<ErrorResponseDto> handleResourceAlreadyExistsException(ResourceAlreadyExistisException ex,
-                                                                                 WebRequest webRequest) {
-        ErrorResponseDto errorResponseDTO = new ErrorResponseDto(
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<ErrorResourceAlreadyExistsDto> handleResourceAlreadyExistsException(ResourceAlreadyExistsException ex,
+                                                                                              WebRequest webRequest) {
+        ErrorResourceAlreadyExistsDto errorResponseDTO = new ErrorResourceAlreadyExistsDto(
                 webRequest.getDescription(false),
                 HttpStatus.CONFLICT,
                 ex.getMessage(),

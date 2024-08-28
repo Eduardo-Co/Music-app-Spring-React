@@ -1,8 +1,9 @@
 package com.backend.musicApp.service.impl;
 
 import com.backend.musicApp.dto.UserDto;
+import com.backend.musicApp.entity.Role;
 import com.backend.musicApp.entity.User;
-import com.backend.musicApp.exception.ResourceAlreadyExistisException;
+import com.backend.musicApp.exception.ResourceAlreadyExistsException;
 import com.backend.musicApp.exception.ResourceNotFoundException;
 import com.backend.musicApp.mapper.UserMapper;
 import com.backend.musicApp.repository.UserRepository;
@@ -30,7 +31,9 @@ public class iUserServiceImpl implements iUserService {
         Optional<User> foundUser = userRepository.findByEmail(user.getEmail());
 
         if(foundUser.isPresent())
-            throw new ResourceAlreadyExistisException("User", "Email", userDto.getEmail());
+            throw new ResourceAlreadyExistsException("User", "Email", userDto.getEmail());
+
+        user.setRole(Role.User);
 
         userRepository.save(user);
     }
@@ -52,7 +55,7 @@ public class iUserServiceImpl implements iUserService {
             Optional<User> verifyEmail = userRepository.findByEmail(existingUser.getEmail());
 
             if (verifyEmail.isPresent())
-                throw new ResourceAlreadyExistisException("User", "Email", existingUser.getEmail());
+                throw new ResourceAlreadyExistsException("User", "Email", existingUser.getEmail());
 
             userRepository.save(existingUser);
         } else {

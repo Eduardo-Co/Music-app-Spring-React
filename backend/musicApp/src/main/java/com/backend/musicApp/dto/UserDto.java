@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class UserDto {
 
     @NotBlank(message = "Username is required")
-    @Size(max = 255, message = "Username cannot exceed 255 characters")
+    @Size(min = 4, max = 255, message = "Username must be between 4 and 255 characters")
     private String username;
 
     @NotBlank(message = "Email is required")

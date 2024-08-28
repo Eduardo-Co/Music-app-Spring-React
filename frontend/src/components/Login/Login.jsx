@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import './Login.css';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -28,9 +31,13 @@ function Login() {
     }
   };
 
+  const handleRegisterRedirect = () => {
+    navigate('/register'); 
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen ">
-      <section id="loginForm" className="content p-8 rounded-lg shadow-lg max-w-2xl w-full">
+      <section id="loginForm" className="p-8 rounded-lg shadow-lg max-w-2xl w-full">
         <div className="text-center mb-6">
           <img 
             src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp" 
@@ -98,7 +105,7 @@ function Login() {
               Login
             </button>
             <p className="text-sm mt-4">
-              Don't have an account? <a href="#!" className="text-red-500 hover:underline">Register</a>
+              Don't have an account? <span onClick={handleRegisterRedirect} className="text-red-500 hover:underline cursor-pointer">Register</span>
             </p>
           </div>
         </form>
