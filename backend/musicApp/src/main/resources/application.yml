@@ -21,3 +21,8 @@ spring:
         hibernate:
           format_sql: true
 
+api:
+  security:
+    token:
+      secret: "|e?oh&?z$eMG@C^UQ~}8J1,sgJy:,DfE"
+      expiration: 3600

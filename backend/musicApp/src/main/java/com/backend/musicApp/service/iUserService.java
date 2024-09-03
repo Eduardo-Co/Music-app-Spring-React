@@ -11,4 +11,5 @@ public interface iUserService {
     void updateUser(UserDto user, Long id);
     Optional<User> fetchUser(Long id);
     void deleteUser(Long id);
+    void printSomething();
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Login.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,14 +7,25 @@ function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  
+  const [csrfToken, setCsrfToken] = useState('');
+
+  useEffect(() => {
+    const token = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('JWT_TOKEN='))
+      ?.split('=')[1];
+    setCsrfToken(token || '');
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('/api/login', {
+      const response = await fetch('http://localhost:8080/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'JWT_TOKEN': csrfToken,
         },
         body: JSON.stringify({ email, password }),
       });
@@ -25,6 +36,7 @@ function Login() {
 
       const data = await response.json();
       console.log('Login successful:', data);
+      console.log('Token:', data.token);
 
     } catch (error) {
       setError(error.message);
@@ -64,7 +76,7 @@ function Login() {
             <input 
               type="email" 
               id="email" 
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
               placeholder="Enter a valid email address" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -76,7 +88,7 @@ function Login() {
             <input 
               type="password" 
               id="password" 
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
               placeholder="Enter password" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}

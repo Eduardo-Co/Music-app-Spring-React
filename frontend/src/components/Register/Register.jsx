@@ -28,7 +28,7 @@ function Register() {
     
 
     try {
-      const response = await fetch('http://localhost:8080/user/create', {
+      const response = await fetch('http://localhost:8080/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -40,6 +40,7 @@ function Register() {
       if (!response.ok) {
         const errorData = await response.json();
         console.log(errorData);
+        console.log(errorData.message)
         if (errorData.username) setUsernameError(errorData.username);
         if (errorData.email) setEmailError(errorData.email);
         if (errorData.password) setPasswordError(errorData.password);
@@ -48,7 +49,6 @@ function Register() {
         
         return;
       }
-
       const data = await response.json();
       navigate('/login');
 

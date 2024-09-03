@@ -25,9 +25,6 @@ public class UserDto {
     @Size(max = 255, message = "Email cannot exceed 255 characters")
     private String email;
 
-    @NotNull(message = "Role is required")
-    private Role role;
-
     @NotBlank(message = "Password is required")
     @Size(min = 8, max = 255, message = "Password must be between 8 and 255 characters")
     private String password;

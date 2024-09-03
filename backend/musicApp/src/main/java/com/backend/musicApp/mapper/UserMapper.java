@@ -15,7 +15,6 @@ public class UserMapper {
         UserDto userDto = new UserDto();
         userDto.setUsername(user.getUsername());
         userDto.setEmail(user.getEmail());
-        userDto.setRole(user.getRole());
         userDto.setPhotoUrl(user.getPhotoUrl());
 
         return userDto;
@@ -29,7 +28,6 @@ public class UserMapper {
         User user = new User();
         user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());
-        user.setRole(Role.valueOf(String.valueOf(userDto.getRole())));
         user.setPhotoUrl(userDto.getPhotoUrl());
         user.setPassword(userDto.getPassword());
         return user;
