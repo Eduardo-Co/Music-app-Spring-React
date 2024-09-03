@@ -34,7 +34,8 @@ public class AuthController {
     private final VerifyJwtCookieToken verifyJwtCookieToken;
 
     @Autowired
-    public AuthController(iUserService userService, AuthenticationManager authenticationManager, TokenService tokenService, JwtTokenProvider jwtTokenProvider, VerifyJwtCookieToken verifyJwtCookieToken) {
+    public AuthController(iUserService userService, AuthenticationManager authenticationManager, TokenService tokenService,
+                          JwtTokenProvider jwtTokenProvider, VerifyJwtCookieToken verifyJwtCookieToken) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;

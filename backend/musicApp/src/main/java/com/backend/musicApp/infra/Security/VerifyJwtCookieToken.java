@@ -1,8 +1,8 @@
 package com.backend.musicApp.infra.Security;
 
 import com.backend.musicApp.entity.User;
+import com.backend.musicApp.exception.UserNotAuthenticatedException;
 import com.backend.musicApp.repository.UserRepository;
-import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,12 +22,16 @@ public class VerifyJwtCookieToken {
         if (token != null && !token.isEmpty()) {
             String email = tokenService.verifyToken(token);
 
-            if (email != null && !email.isEmpty()) {
-                User user = userRepository.findUserByEmail(email);
-                if (user != null) {
-                    return tokenService.generateToken(user);
-                }
+            if(email == null || email.isEmpty()) {
+                throw new UserNotAuthenticatedException();
             }
+
+            User user = userRepository.findUserByEmail(email);
+
+            if (user != null) {
+                return tokenService.generateToken(user);
+            }
+
         }
 
         return null;
