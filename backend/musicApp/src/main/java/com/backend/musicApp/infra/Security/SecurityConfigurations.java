@@ -52,6 +52,7 @@ public class SecurityConfigurations {
                         config.setAllowCredentials(true);
                         config.setAllowedHeaders(Collections.singletonList("*"));
                         config.setMaxAge(3600L);
+                        config.setAllowCredentials(true);
                         return config;
                     }
                 }))

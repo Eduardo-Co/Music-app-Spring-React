@@ -2,6 +2,7 @@ package com.backend.musicApp.controller;
 
 import com.backend.musicApp.dto.AuthDto;
 import com.backend.musicApp.dto.ResponseDto;
+import com.backend.musicApp.dto.TokenResponseDto;
 import com.backend.musicApp.dto.UserDto;
 import com.backend.musicApp.entity.User;
 import com.backend.musicApp.infra.Security.JwtTokenProvider;
@@ -44,7 +45,7 @@ public class AuthController {
     }
 
     @GetMapping("/refresh-token")
-    public ResponseEntity<ResponseDto> refreshToken(HttpServletRequest request) {
+    public ResponseEntity<TokenResponseDto> refreshToken(HttpServletRequest request) {
 
         Cookie[] cookies = request.getCookies();
         Cookie jwtCookie = null;
@@ -63,11 +64,10 @@ public class AuthController {
         if (shortDurationToken != null) {
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(new ResponseDto(
-                            "200",
-                            LocalDateTime.now().toString(),
+                    .body(new TokenResponseDto(
                             shortDurationToken
                     ));
+
         }
 
 
@@ -75,10 +75,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-        public ResponseEntity<ResponseDto> login(@RequestBody @Valid AuthDto data, HttpServletResponse response){
+        public ResponseEntity<TokenResponseDto> login(@RequestBody @Valid AuthDto data, HttpServletResponse response){
         UsernamePasswordAuthenticationToken userNamePassword = new UsernamePasswordAuthenticationToken(
-                data.email(),
-                data.password()
+                data.getEmail(),
+                data.getPassword()
         );
         Authentication auth = this.authenticationManager.authenticate(userNamePassword);
 
@@ -96,9 +96,7 @@ public class AuthController {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new ResponseDto(
-                        "200",
-                        LocalDateTime.now().toString(),
+                .body(new TokenResponseDto(
                         token
                 ));
     }
