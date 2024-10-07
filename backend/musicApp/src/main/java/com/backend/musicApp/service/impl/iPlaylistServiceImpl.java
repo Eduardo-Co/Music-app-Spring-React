@@ -9,8 +9,8 @@ import com.backend.musicApp.repository.PlaylistRepository;
 import com.backend.musicApp.repository.UserRepository;
 import com.backend.musicApp.service.iPlaylistService;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -55,17 +55,6 @@ public class iPlaylistServiceImpl implements iPlaylistService {
     }
 
     @Override
-    public Optional<Playlist> fetchPlaylist(Long id) {
-        Optional<Playlist> foundPlaylist = playlistRepository.findById(id);
-
-        if (foundPlaylist.isPresent()) {
-            return foundPlaylist;
-        } else {
-            throw new ResourceNotFoundException("Playlist", "Id", id.toString());
-        }
-    }
-
-    @Override
     public void deletePlaylist(Long id) {
         Optional<Playlist> playlist = playlistRepository.findById(id);
 
@@ -75,4 +64,36 @@ public class iPlaylistServiceImpl implements iPlaylistService {
             throw new ResourceNotFoundException("Playlist", "Id", id.toString());
         }
     }
+
+    @Override
+    public Optional<PlaylistDto> fetchPlaylist(Long id) {
+        Optional<Playlist> foundPlaylist = playlistRepository.findById(id);
+
+        if (foundPlaylist.isPresent()) {
+            return Optional.of(PlaylistMapper.toDto(foundPlaylist.get()));
+        } else {
+            throw new ResourceNotFoundException("Playlist", "Id", id.toString());
+        }
+    }
+
+    @Override
+    public Optional<List<PlaylistDto>> fetchAllPlaylists(Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId.toString()));
+
+        List<Playlist> playlists = playlistRepository.findByUser(user);
+
+        if (playlists.isEmpty()) {
+            return Optional.empty();
+        }
+
+        List<PlaylistDto> playlistsDto = playlists.stream()
+                .map(PlaylistMapper::toDto)
+                .toList();
+
+        return Optional.of(playlistsDto);
+    }
+
+
 }

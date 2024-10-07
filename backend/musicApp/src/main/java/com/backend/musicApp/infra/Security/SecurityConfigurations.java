@@ -47,7 +47,7 @@ public class SecurityConfigurations {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration config = new CorsConfiguration();
-                        config.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));
+                        config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
                         config.setAllowedMethods(Collections.singletonList("*"));
                         config.setAllowCredentials(true);
                         config.setAllowedHeaders(Collections.singletonList("*"));
@@ -66,7 +66,8 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.GET, "/user/fetch/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/playlist/**").authenticated()
-                        .requestMatchers(HttpMethod.POST, "artist/create").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/artist/create").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/images/artists/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

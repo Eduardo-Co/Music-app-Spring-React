@@ -1,7 +1,6 @@
 package com.backend.musicApp.mapper;
 
 import com.backend.musicApp.dto.UserDto;
-import com.backend.musicApp.entity.Role;
 import com.backend.musicApp.entity.User;
 
 public class UserMapper {
@@ -16,6 +15,7 @@ public class UserMapper {
         userDto.setUsername(user.getUsername());
         userDto.setEmail(user.getEmail());
         userDto.setPhotoUrl(user.getPhotoUrl());
+
 
         return userDto;
     }

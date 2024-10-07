@@ -1,5 +1,6 @@
 server:
   port: 8080
+
 spring:
   application:
     name: "userControl"
@@ -20,9 +21,18 @@ spring:
       properties:
         hibernate:
           format_sql: true
+  sql:
+    init:
+      schema-locations: classpath:initDatabase/defaultSchemas/Schemas.sql
+  web:
+    resources:
+      static-locations: file:./src/main/resources/Images/Artists/
 
 api:
   security:
     token:
       secret: "|e?oh&?z$eMG@C^UQ~}8J1,sgJy:,DfE"
+    tokenShortDuration:
       expiration: 3600
+    tokenLongDuration:
+      expiration: 604800

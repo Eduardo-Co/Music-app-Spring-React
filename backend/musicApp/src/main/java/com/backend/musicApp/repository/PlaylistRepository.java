@@ -1,7 +1,15 @@
 package com.backend.musicApp.repository;
 
 import com.backend.musicApp.entity.Playlist;
-import org.springframework.data.repository.CrudRepository;
+import com.backend.musicApp.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PlaylistRepository extends CrudRepository<Playlist, Long> {
+import java.util.List;
+import java.util.Optional;
+
+public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
+
+    List<Playlist> findByUser(User user);
+
 }
+

@@ -1,5 +1,6 @@
 package com.backend.musicApp.dto;
 
+import com.backend.musicApp.entity.FileData;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,8 @@ public class ArtistDto {
     @Size(max = 50, message = "Genre must be less than 50 characters")
     private String genre;
 
-    @NotBlank(message = "Photo URL cannot be blank")
-    @Size(max = 200, message = "Photo URL must be less than 200 characters")
     private String photoUrl;
+
+    private Long artistId;
+
 }

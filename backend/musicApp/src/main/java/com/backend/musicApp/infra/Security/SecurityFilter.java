@@ -4,6 +4,7 @@ import com.backend.musicApp.exception.UserNotAuthenticatedException;
 import com.backend.musicApp.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,18 +26,30 @@ public class SecurityFilter extends OncePerRequestFilter {
         this.tokenService = tokenService;
     }
 
-    private String recoveryToken(HttpServletRequest request) {
+//    private String recoveryToken(HttpServletRequest request) {
+//
+//        String authHeader = request.getHeader("Authorization");
+//        if(authHeader == null) return null;
+//        return authHeader.replace("Bearer ", "");
+//    }
 
-        String authHeader = request.getHeader("Authorization");
-        if(authHeader == null) return null;
-        return authHeader.replace("Bearer ", "");
+    private String getTokenFromCookies(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("JWT_TOKEN".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String token = this.recoveryToken(request);
+        String token = this.getTokenFromCookies(request);
         if(token != null) {
 
             String email = this.tokenService.verifyToken(token);
@@ -45,15 +58,17 @@ public class SecurityFilter extends OncePerRequestFilter {
 
             UserDetails userDetails = userRepository.findByEmail(email);
 
-            var authentication = new UsernamePasswordAuthenticationToken(
-                    userDetails,
-                    null,
-                    userDetails.getAuthorities()
-            );
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (userDetails != null) {
+                var authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                );
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                throw new UserNotAuthenticatedException("User Not Founded");
+            }
         }
-
         filterChain.doFilter(request, response);
     }
 }

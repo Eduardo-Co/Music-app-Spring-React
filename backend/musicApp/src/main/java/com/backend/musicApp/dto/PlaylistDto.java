@@ -13,8 +13,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class PlaylistDto {
 
-    @NotNull(message = "Playlist ID cannot be null")
-    @Positive(message = "Playlist ID must be a positive number")
     private Long playlistId;
 
     @NotNull(message = "User ID cannot be null")

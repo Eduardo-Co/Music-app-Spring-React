@@ -3,7 +3,6 @@ package com.backend.musicApp.infra.Security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.backend.musicApp.entity.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,7 @@ public class JwtTokenProvider {
     @Value("${api.security.token.secret}")
     private String secret;
 
-    @Value("${api.security.token.expiration}")
+    @Value("${api.security.tokenLongDuration.expiration}")
     private long expirationSeconds;
 
     public String generateToken(User user) {

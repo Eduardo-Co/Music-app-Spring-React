@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -45,12 +46,12 @@ public class PlaylistController {
     }
 
     @GetMapping("/fetch/{id}")
-    public ResponseEntity<Optional<Playlist>> fetchPlaylist(@PathVariable Long id) {
-        Optional<Playlist> foundPlaylist = playlistService.fetchPlaylist(id);
+    public ResponseEntity<Optional<PlaylistDto>> fetchPlaylist(@PathVariable Long id) {
+        Optional<PlaylistDto> foundPlaylist = playlistService.fetchPlaylist(id);
 
-        return ResponseEntity
-                .status(HttpStatus.FOUND)
-                .body(foundPlaylist);
+        return foundPlaylist.isPresent()
+                ? ResponseEntity.status(HttpStatus.FOUND).body(foundPlaylist)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body(Optional.empty());
     }
 
     @PostMapping("/delete/{id}")
@@ -62,3 +63,4 @@ public class PlaylistController {
                 .body(new ResponseDto("200", LocalDateTime.now().toString(), "Playlist Deleted Successfully"));
     }
 }
+
