@@ -1,47 +1,22 @@
-import '@fortawesome/fontawesome-free/css/all.min.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import AuthProvider from './context/AuthContext.jsx'; 
-import useTokenVerification from './hooks/checkAndRefreshToken'; 
-import Login from './components/Login/Login';
-import Register from './components/Register/Register';
-import Page404 from './components/RedirectPages/Page404';
-import AdminLogin from './components/Login/AdminLogin';
-import AdminHome from './components/Admin/AdminHome';
-import Home from './components/Home/Home'; 
-import RequiredAuth from './routes/RequiredAuth';
-import Page401 from './components/RedirectPages/Page401';
-import './App.css';
+import { RouterProvider } from 'react-router-dom';
 
+// project import
+import router from 'routes';
+import ThemeCustomization from 'themes';
 
-function App() {
-  useTokenVerification(); 
-  const ROLES = {
-    'User': 'USER',
-    'Admin': 'ADMIN'
-  }
-  
-  return ( 
-    <BrowserRouter>
-      <AuthProvider>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/admin-login" element={<AdminLogin />} />
+import ScrollTop from 'components/ScrollTop';
+import  AuthProvider  from './contexts/AuthContext'; 
 
-            {/* Rotas protegidas */}
-            <Route element={<RequiredAuth allowedRoles={[ROLES.User]}/>}>
-              <Route path="/home" element={<Home />} />
-            </Route>
+// ==============================|| APP - THEME, ROUTER, LOCAL ||============================== //
 
-            <Route element={<RequiredAuth allowedRoles={[ROLES.Admin]}/>}>
-              <Route path="/admin/home" element={<AdminHome />} />
-            </Route>
-            <Route path='/unauthorized' element={<Page401 />} />
-            <Route path="*" element={<Page404 />} />
-          </Routes>
-      </AuthProvider>
-    </BrowserRouter>
+export default function App() {
+  return (
+    <AuthProvider>
+      <ThemeCustomization>
+        <ScrollTop>
+          <RouterProvider router={router} />
+        </ScrollTop>
+      </ThemeCustomization>
+    </AuthProvider>
   );
 }
-
-export default App;

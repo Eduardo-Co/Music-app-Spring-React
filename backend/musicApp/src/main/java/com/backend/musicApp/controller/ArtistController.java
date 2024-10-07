@@ -120,21 +120,24 @@ public class ArtistController {
 
     @PostMapping("/delete/{id}")
     public ResponseEntity<ResponseDto> deleteArtist(@PathVariable Long id) throws IOException {
-
         Optional<ArtistDto> artist = artistService.fetchArtist(id);
-        if (artist.isPresent() && artist.get().getPhotoUrl() != null) {
-            String photoUrl = artist.get().getPhotoUrl();
 
-            String fileName = photoUrl.substring(photoUrl.lastIndexOf("artists/") + "artists/".length());
-
-            storageService.deleteImageFromFileSystem(fileName);
-        }
         artistService.deleteArtist(id);
 
+        if (artist.isPresent() && artist.get().getPhotoUrl() != null) {
+            String photoUrl = artist.get().getPhotoUrl();
+            String fileName = photoUrl.substring(photoUrl.lastIndexOf("artists/") + "artists/".length());
+
+            try {
+                storageService.deleteImageFromFileSystem(fileName);
+            } catch (IOException e) {
+                System.err.println("Erro ao excluir a imagem: " + e.getMessage());
+            }
+        }
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new ResponseDto("201",
                         LocalDateTime.now().toString(),
-                        "Artist Deleted Sucessfully"));
+                        "Artist Deleted Successfully"));
     }
 }
