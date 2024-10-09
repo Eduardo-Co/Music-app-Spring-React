@@ -25,6 +25,7 @@ export default function DeleteAlbumModal({ onClose, open, albumId, setUpdateAlbu
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState(''); 
+  const [errorMessage, setErrorMessage] = useState(''); 
 
   const handleDelete = async () => {
     try {

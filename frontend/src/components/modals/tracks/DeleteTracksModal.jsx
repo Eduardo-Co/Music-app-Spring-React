@@ -25,6 +25,7 @@ export default function DeleteTrackModal({ onClose, open, trackId, setUpdateTrac
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState(''); 
+  const [errorMessage, setErrorMessage] = useState(''); 
 
   const handleDelete = async () => {
     try {
