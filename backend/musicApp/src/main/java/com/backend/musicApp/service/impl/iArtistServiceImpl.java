@@ -2,12 +2,15 @@ package com.backend.musicApp.service.impl;
 
 import com.backend.musicApp.dto.ArtistDto;
 import com.backend.musicApp.entity.Artist;
+import com.backend.musicApp.entity.FileData;
 import com.backend.musicApp.exception.ResourceNotFoundException;
 import com.backend.musicApp.mapper.ArtistMapper;
 import com.backend.musicApp.repository.ArtistRepository;
 import com.backend.musicApp.service.iArtistService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -46,14 +49,23 @@ public class iArtistServiceImpl implements iArtistService {
     }
 
     @Override
-    public Optional<Artist> fetchArtist(Long id) {
-        Optional<Artist> foundArtist = artistRepository.findById(id);
+    public Optional<ArtistDto> fetchArtist(Long id) {
+        Artist foundArtist = artistRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Artist", "Id", id.toString()));
 
-        if (foundArtist.isPresent()) {
-            return foundArtist;
-        } else {
-            throw new ResourceNotFoundException("Artist", "Id", id.toString());
+        return Optional.of(ArtistMapper.toDto(foundArtist));
+    }
+
+    @Override
+    public Optional<List<ArtistDto>> fetchArtists() {
+        Iterable<Artist> foundedArtists = artistRepository.findAll();
+        List<ArtistDto> artistDtos = new ArrayList<>();
+
+        for (Artist artist : foundedArtists) {
+            artistDtos.add(ArtistMapper.toDto(artist));
         }
+
+        return artistDtos.isEmpty() ? Optional.empty() : Optional.of(artistDtos);
     }
 
     @Override

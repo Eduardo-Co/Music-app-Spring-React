@@ -1,10 +1,12 @@
 package com.backend.musicApp.service.impl;
 
+import com.backend.musicApp.dto.AlbumDto;
 import com.backend.musicApp.dto.TrackDto;
 import com.backend.musicApp.entity.Album;
 import com.backend.musicApp.entity.Artist;
 import com.backend.musicApp.entity.Track;
 import com.backend.musicApp.exception.ResourceNotFoundException;
+import com.backend.musicApp.mapper.AlbumMapper;
 import com.backend.musicApp.mapper.TrackMapper;
 import com.backend.musicApp.repository.AlbumRepository;
 import com.backend.musicApp.repository.ArtistRepository;
@@ -12,6 +14,8 @@ import com.backend.musicApp.repository.TrackRepository;
 import com.backend.musicApp.service.iTrackService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -73,15 +77,31 @@ public class iTrackServiceImpl implements iTrackService {
     }
 
     @Override
-    public Optional<Track> fetchTrack(Long id) {
+    public Optional<TrackDto> fetchTrack(Long id) {
         Optional<Track> foundTrack = trackRepository.findById(id);
 
         if (foundTrack.isPresent()) {
-            return foundTrack;
+            TrackDto trackDto = TrackMapper.toDto(foundTrack.get());
+
+            return Optional.ofNullable(trackDto);
         } else {
             throw new ResourceNotFoundException("Track", "Id", id.toString());
         }
     }
+
+    @Override
+    public Optional<List<TrackDto>> fetchTracks() {
+
+        Iterable<Track> foundedTracks = trackRepository.findAll();
+        List<TrackDto> tracksDto = new ArrayList<>();
+
+        for (Track track : foundedTracks) {
+            tracksDto.add(TrackMapper.toDto(track));
+        }
+
+        return tracksDto.isEmpty() ? Optional.empty() : Optional.of(tracksDto);
+    }
+
 
     @Override
     public void deleteTrack(Long id) {

@@ -1,6 +1,8 @@
 package com.backend.musicApp.exception;
 
+import com.backend.musicApp.dto.ErrorResourceAlreadyExistsDto;
 import com.backend.musicApp.dto.ErrorResponseDto;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -59,10 +61,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
         return new ResponseEntity<>(errorResponseDTO, HttpStatus.NOT_FOUND);
     }
-    @ExceptionHandler(ResourceAlreadyExistisException.class)
-    public ResponseEntity<ErrorResponseDto> handleResourceAlreadyExistsException(ResourceAlreadyExistisException ex,
-                                                                                 WebRequest webRequest) {
-        ErrorResponseDto errorResponseDTO = new ErrorResponseDto(
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<ErrorResourceAlreadyExistsDto> handleResourceAlreadyExistsException(ResourceAlreadyExistsException ex,
+                                                                                              WebRequest webRequest) {
+        ErrorResourceAlreadyExistsDto errorResponseDTO = new ErrorResourceAlreadyExistsDto(
                 webRequest.getDescription(false),
                 HttpStatus.CONFLICT,
                 ex.getMessage(),
@@ -70,5 +72,46 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
 
         return new ResponseEntity<>(errorResponseDTO, HttpStatus.CONFLICT);
+    }
+    @ExceptionHandler(UserNotAuthenticatedException.class)
+    public ResponseEntity<ErrorResponseDto> handleUserNotAuthenticatedException(UserNotAuthenticatedException ex,
+                                                                                             WebRequest webRequest) {
+        ErrorResponseDto errorResponseDTO = new ErrorResponseDto(
+                webRequest.getDescription(false),
+
+                HttpStatus.NOT_FOUND,
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(errorResponseDTO, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AudioNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleAudioNotFoundException(AudioNotFoundException ex,
+                                                                         WebRequest webRequest) {
+        ErrorResponseDto errorResponseDTO = new ErrorResponseDto(
+                webRequest.getDescription(false),
+
+                HttpStatus.NOT_FOUND,
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(errorResponseDTO, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponseDto> handleForeignKeyConstraintViolation(DataIntegrityViolationException ex
+    , WebRequest webRequest) {
+
+        ErrorResponseDto errorResponse = new ErrorResponseDto(
+                webRequest.getDescription(false),
+                HttpStatus.BAD_REQUEST,
+                "FOREIGN_KEY_VIOLATION",
+                LocalDateTime.now()
+
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

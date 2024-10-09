@@ -1,84 +1,65 @@
 package com.backend.musicApp.service.impl;
 
 import com.backend.musicApp.dto.UserDto;
+import com.backend.musicApp.entity.Roles;
 import com.backend.musicApp.entity.User;
-import com.backend.musicApp.exception.ResourceAlreadyExistisException;
-import com.backend.musicApp.exception.ResourceNotFoundException;
+import com.backend.musicApp.exception.ResourceAlreadyExistsException;
 import com.backend.musicApp.mapper.UserMapper;
+import com.backend.musicApp.repository.RolesRepository;
 import com.backend.musicApp.repository.UserRepository;
 import com.backend.musicApp.service.iUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class iUserServiceImpl implements iUserService {
 
-
     private final UserRepository userRepository;
+    private final RolesRepository roleRepository;
 
     @Autowired
-    public iUserServiceImpl(UserRepository userRepository) {
+    public iUserServiceImpl(UserRepository userRepository, RolesRepository roleR) {
         this.userRepository = userRepository;
+        this.roleRepository = roleR;
     }
 
     @Override
-    public void createUser(UserDto userDto) {
-        User user = UserMapper.toUser(userDto);
-
-        Optional<User> foundUser = userRepository.findByEmail(user.getEmail());
-
-        if(foundUser.isPresent())
-            throw new ResourceAlreadyExistisException("User", "Email", userDto.getEmail());
-
-        userRepository.save(user);
-    }
-
-    @Override
-    public void updateUser(UserDto userDto, Long id) {
-        User updatedUser = UserMapper.toUser(userDto);
-        Optional<User> foundUser = userRepository.findById(id);
-
-        if (foundUser.isPresent()) {
-            User existingUser = foundUser.get();
-
-            existingUser.setUsername(updatedUser.getUsername());
-            existingUser.setEmail(updatedUser.getEmail());
-            existingUser.setPassword(updatedUser.getPassword());
-            existingUser.setRole(updatedUser.getRole());
-            existingUser.setPhotoUrl(updatedUser.getPhotoUrl());
-
-            Optional<User> verifyEmail = userRepository.findByEmail(existingUser.getEmail());
-
-            if (verifyEmail.isPresent())
-                throw new ResourceAlreadyExistisException("User", "Email", existingUser.getEmail());
-
-            userRepository.save(existingUser);
-        } else {
-            throw new ResourceNotFoundException("User", "Email", updatedUser.getEmail());
+    public void createUser(UserDto user) {
+        if(userRepository.findByEmail(user.getEmail()) != null){
+            throw new ResourceAlreadyExistsException("user", "email", user.getEmail());
         }
+        String encryptedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
+        user.setPassword(encryptedPassword);
+        User newUser = UserMapper.toUser(user);
+        Roles userRole = roleRepository.findByRoleName(Roles.RoleName.USER)
+                .orElseThrow(() -> new RuntimeException("Role USER not found."));
+
+        newUser.setRoles(Set.of(userRole));
+
+        userRepository.save(newUser);
+    }
+
+    @Override
+    public void updateUser(UserDto user, Long id) {
+
     }
 
     @Override
     public Optional<User> fetchUser(Long id) {
-        Optional<User> foundUser = userRepository.findById(id);
-
-        if (foundUser.isPresent()) {
-            return foundUser;
-        } else {
-            throw new ResourceNotFoundException("User", "Id", id.toString());
-        }
+        return Optional.empty();
     }
 
     @Override
     public void deleteUser(Long id) {
-        Optional<User> user = userRepository.findById(id);
 
-        if(user.isPresent()) {
-            userRepository.delete(user.get());
-        }else{
-            throw new ResourceNotFoundException("User", "Id", id.toString());
-        }
+    }
+
+    @Override
+    public void printSomething() {
+
     }
 }

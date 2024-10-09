@@ -1,15 +1,19 @@
 package com.backend.musicApp.service.impl;
 
 import com.backend.musicApp.dto.AlbumDto;
+import com.backend.musicApp.dto.ArtistDto;
 import com.backend.musicApp.entity.Album;
 import com.backend.musicApp.entity.Artist;
 import com.backend.musicApp.exception.ResourceNotFoundException;
 import com.backend.musicApp.mapper.AlbumMapper;
+import com.backend.musicApp.mapper.ArtistMapper;
 import com.backend.musicApp.repository.AlbumRepository;
 import com.backend.musicApp.repository.ArtistRepository;
 import com.backend.musicApp.service.iAlbumService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -62,15 +66,29 @@ public class iAlbumServiceImpl implements iAlbumService {
     }
 
     @Override
-    public Optional<Album> fetchAlbum(Long id) {
+    public Optional<AlbumDto> fetchAlbum(Long id) {
         Optional<Album> foundAlbum = albumRepository.findById(id);
 
         if (foundAlbum.isPresent()) {
-            return foundAlbum;
+            AlbumDto albumDto = AlbumMapper.toDto(foundAlbum.get());
+            return Optional.of(albumDto);
         } else {
             throw new ResourceNotFoundException("Album", "Id", id.toString());
         }
     }
+
+    @Override
+    public Optional<List<AlbumDto>> fetchAlbums() {
+        Iterable<Album> foundedAlbums = albumRepository.findAll();
+        List<AlbumDto> albumsDto = new ArrayList<>();
+
+        for (Album album : foundedAlbums) {
+            albumsDto.add(AlbumMapper.toDto(album));
+        }
+
+        return albumsDto.isEmpty() ? Optional.empty() : Optional.of(albumsDto);
+    }
+
 
     @Override
     public void deleteAlbum(Long id) {

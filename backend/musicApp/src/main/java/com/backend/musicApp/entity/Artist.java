@@ -22,7 +22,7 @@ public class Artist {
     @Column(nullable = false, length = 255)
     private String genre;
 
-    @Column(name = "photo_url", length = 255)
+    @Column(nullable = true, length = 255)
     private String photoUrl;
 
     @Column(name = "created_at", nullable = false, updatable = false)

@@ -2,6 +2,7 @@ package com.backend.musicApp.mapper;
 
 import com.backend.musicApp.dto.ArtistDto;
 import com.backend.musicApp.entity.Artist;
+import com.backend.musicApp.entity.FileData;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,6 +17,7 @@ public class ArtistMapper {
         artistDto.setName(artist.getName());
         artistDto.setGenre(artist.getGenre());
         artistDto.setPhotoUrl(artist.getPhotoUrl());
+        artistDto.setArtistId(artist.getArtistId());
 
         return artistDto;
     }

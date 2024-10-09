@@ -1,6 +1,11 @@
 server:
   port: 8080
+
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   application:
     name: "userControl"
   profiles:
@@ -20,4 +25,19 @@ spring:
       properties:
         hibernate:
           format_sql: true
+  sql:
+    init:
+      schema-locations: classpath:initDatabase/defaultSchemas/Schemas.sql
+  web:
+    resources:
+      static-locations: classpath:/Images/
 
+
+api:
+  security:
+    token:
+      secret: "|e?oh&?z$eMG@C^UQ~}8J1,sgJy:,DfE"
+    tokenShortDuration:
+      expiration: 3600
+    tokenLongDuration:
+      expiration: 604800

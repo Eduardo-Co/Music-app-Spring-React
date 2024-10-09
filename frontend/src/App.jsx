@@ -1,18 +1,22 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import './App.css';
-import '@fortawesome/fontawesome-free/css/all.min.css';
-import Login from './components/Login/Login';
-import Home from './components/Home/Home';
+import { RouterProvider } from 'react-router-dom';
 
-function App() {
+// project import
+import router from 'routes';
+import ThemeCustomization from 'themes';
+
+import ScrollTop from 'components/ScrollTop';
+import  AuthProvider  from './contexts/AuthContext'; 
+
+// ==============================|| APP - THEME, ROUTER, LOCAL ||============================== //
+
+export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<Home/>} />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <ThemeCustomization>
+        <ScrollTop>
+          <RouterProvider router={router} />
+        </ScrollTop>
+      </ThemeCustomization>
+    </AuthProvider>
   );
 }
-
-export default App
