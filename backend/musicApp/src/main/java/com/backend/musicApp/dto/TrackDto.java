@@ -31,7 +31,9 @@ public class TrackDto {
     @PastOrPresent(message = "Release date cannot be in the future")
     private LocalDate releaseDate;
 
-    @NotBlank(message = "Track link cannot be blank")
     @Size(max = 200, message = "Track link must be less than 200 characters")
     private String trackLink;
+
+    private Long trackId;;
+
 }

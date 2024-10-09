@@ -33,8 +33,6 @@ public class Track {
     @Column(nullable = false)
     private LocalTime duration;
 
-
-
     @Column(name = "release_date", nullable = false)
     private LocalDate releaseDate;
 

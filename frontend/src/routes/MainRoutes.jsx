@@ -9,8 +9,9 @@ const Color = Loadable(lazy(() => import('pages/component-overview/color')));
 const Typography = Loadable(lazy(() => import('pages/component-overview/typography')));
 const Shadow = Loadable(lazy(() => import('pages/component-overview/shadows')));
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/index')));
-const ArtistCreate = Loadable(lazy(() => import('pages/admin/artists')));
-
+const ArtistsIndex = Loadable(lazy(() => import('pages/admin/artists')));
+const AlbumIndex = Loadable(lazy(() => import('pages/admin/albums')));
+const TracksIndex = Loadable(lazy(() => import('pages/admin/tracks')));
 // render - sample page
 const SamplePage = Loadable(lazy(() => import('pages/extra-pages/sample-page')));
 
@@ -25,8 +26,16 @@ const MainRoutes = {
       element: <Dashboard />, 
       children: [
         {
-          path: 'artists/create',
-          element: <ArtistCreate />
+          path: 'tracks/index',
+          element: <TracksIndex />
+        },
+        {
+          path: 'albums/index',
+          element: <AlbumIndex />
+        },
+        {
+          path: 'artists/index',
+          element: <ArtistsIndex />
         },
         {
           path: '', 

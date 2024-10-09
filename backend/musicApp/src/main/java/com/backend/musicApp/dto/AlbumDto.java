@@ -27,7 +27,7 @@ public class AlbumDto {
     @PastOrPresent(message = "Release date cannot be in the future")
     private LocalDate releaseDate;
 
-    @NotBlank(message = "Photo URL cannot be blank")
-    @Size(max = 200, message = "Photo URL must be less than 200 characters")
     private String photoUrl;
+
+    private Long albumId;
 }

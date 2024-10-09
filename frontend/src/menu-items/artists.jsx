@@ -1,7 +1,7 @@
-import { UserAddOutlined } from '@ant-design/icons';
+import { FolderOutlined } from '@ant-design/icons';
 
 const icons = {
-    UserAddOutlined
+  FolderOutlined
 };
 
 // ==============================|| MENU ITEMS - ARTISTS ||============================== //
@@ -12,11 +12,11 @@ const artists = {
   type: 'group',
   children: [
     {
-      id: 'create-artist',
-      title: 'Create',
+      id: 'index-artist',
+      title: 'Manege Artists',
       type: 'item',
-      url: 'artists/create',
-      icon: icons.UserAddOutlined,
+      url: 'artists/index',
+      icon: icons.FolderOutlined,
       breadcrumbs: false
     }
   ]

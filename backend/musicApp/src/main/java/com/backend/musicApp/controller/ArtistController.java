@@ -3,22 +3,20 @@ package com.backend.musicApp.controller;
 
 import com.backend.musicApp.dto.ArtistDto;
 import com.backend.musicApp.dto.ResponseDto;
-import com.backend.musicApp.entity.Artist;
 import com.backend.musicApp.entity.FileData;
 import com.backend.musicApp.exception.StorageException;
 import com.backend.musicApp.service.StorageService;
 import com.backend.musicApp.service.iArtistService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -45,10 +43,10 @@ public class ArtistController {
                                                     @RequestParam(value = "file", required = false) MultipartFile file)
                                                     throws IOException {
         if (file != null) {
-            Optional<FileData> uploadImage = storageService.uploadImageToFileSystem(file);
+            Optional<FileData> uploadImage = storageService.uploadImageToFileSystem(file, "artists");
 
             if (uploadImage != null && uploadImage.isPresent()) {
-                artistDto.setPhotoUrl("http://localhost:8080/images/artists/" + uploadImage.get().getName());
+                artistDto.setPhotoUrl("http://localhost:8080/storage/artists/" + uploadImage.get().getName());
             } else {
                 throw new StorageException("Não foi possível salvar a imagem");
             }
@@ -75,15 +73,15 @@ public class ArtistController {
         }
 
         if (file != null && !file.isEmpty()) {
-            Optional<FileData> uploadedImage = storageService.uploadImageToFileSystem(file);
+            Optional<FileData> uploadedImage = storageService.uploadImageToFileSystem(file, "artists");
 
             String oldPhotoUrl = existingArtist.get().getPhotoUrl();
             if (oldPhotoUrl != null && !oldPhotoUrl.isEmpty()) {
-                storageService.deleteImageFromFileSystem(oldPhotoUrl);
+                storageService.deleteImageFromFileSystem(oldPhotoUrl, "artists");
             }
 
             if (uploadedImage.isPresent()) {
-                artistDto.setPhotoUrl("http://localhost:8080/images/artists/" + uploadedImage.get().getName());
+                artistDto.setPhotoUrl("http://localhost:8080/storage/artists/" + uploadedImage.get().getName());
             } else {
                 throw new StorageException("Não foi possível salvar a imagem.");
             }
@@ -127,13 +125,14 @@ public class ArtistController {
         if (artist.isPresent() && artist.get().getPhotoUrl() != null) {
             String photoUrl = artist.get().getPhotoUrl();
             String fileName = photoUrl.substring(photoUrl.lastIndexOf("artists/") + "artists/".length());
-
+            System.out.println(fileName);
             try {
-                storageService.deleteImageFromFileSystem(fileName);
+                storageService.deleteImageFromFileSystem(fileName, "artists");
             } catch (IOException e) {
                 System.err.println("Erro ao excluir a imagem: " + e.getMessage());
             }
         }
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new ResponseDto("201",

@@ -32,8 +32,8 @@ public class TrackMapper {
         trackDto.setTrackLink(track.getTrackLink());
         trackDto.setDuration(track.getDuration());
         trackDto.setReleaseDate(track.getReleaseDate());
-        trackDto.setArtistId(track.getArtist() != null ? track.getArtist().getArtistId() : null);
-        trackDto.setAlbumId(track.getAlbum() != null ? track.getAlbum().getAlbumId() : null);
+        trackDto.setArtistId(track.getArtist().getArtistId());
+        trackDto.setAlbumId(track.getAlbum().getAlbumId());
         return trackDto;
     }
 }

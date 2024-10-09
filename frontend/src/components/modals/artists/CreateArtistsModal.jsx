@@ -43,7 +43,7 @@ export default function CreateArtistModal({ onClose, open, setUpdateArtists }) {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState(''); 
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false); // Estado de loading
+  const [loading, setLoading] = useState(false); 
 
   const handleSave = async () => {
     const formData = new FormData();
@@ -53,7 +53,7 @@ export default function CreateArtistModal({ onClose, open, setUpdateArtists }) {
       formData.append('file', artistPhoto); 
     }
 
-    setLoading(true); // Ativar loading
+    setLoading(true); 
 
     try {
       const response = await api.post('/artist/create', formData, {

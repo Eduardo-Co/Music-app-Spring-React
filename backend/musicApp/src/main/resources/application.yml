@@ -2,6 +2,10 @@ server:
   port: 8080
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   application:
     name: "userControl"
   profiles:
@@ -26,7 +30,8 @@ spring:
       schema-locations: classpath:initDatabase/defaultSchemas/Schemas.sql
   web:
     resources:
-      static-locations: file:./src/main/resources/Images/Artists/
+      static-locations: classpath:/Images/
+
 
 api:
   security:

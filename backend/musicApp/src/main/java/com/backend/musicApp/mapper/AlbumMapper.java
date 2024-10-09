@@ -14,6 +14,7 @@ public class AlbumMapper {
         }
 
         AlbumDto albumDto = new AlbumDto();
+        albumDto.setAlbumId(album.getAlbumId());
         albumDto.setTitle(album.getTitle());
         albumDto.setArtistId(album.getArtist().getArtistId());
         albumDto.setGenre(album.getGenre());

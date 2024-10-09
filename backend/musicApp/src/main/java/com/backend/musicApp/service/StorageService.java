@@ -1,6 +1,5 @@
 package com.backend.musicApp.service;
 
-
 import com.backend.musicApp.Utils.ImageUtils;
 import com.backend.musicApp.entity.FileData;
 import com.backend.musicApp.entity.ImageData;
@@ -19,6 +18,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Optional;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Service
 public class StorageService {
@@ -28,17 +29,18 @@ public class StorageService {
 
     @Autowired
     private FileDataRepository storageFileRepository;
-    private final String FOLDER_PATH = "C:\\Users\\eduardo.cardozo\\Documents\\Codes\\Projetos Pessoais\\Java" +
-            "\\music-app\\backend\\musicApp\\src\\main\\resources\\Images\\Artists\\";
+
+    // Mantém o caminho base, mas permite especificar um subdiretório
+    private final String BASE_FOLDER_PATH = "C:\\Users\\eduardo.cardozo\\Documents\\Codes\\Projetos Pessoais\\Java" +
+            "\\music-app\\backend\\musicApp\\src\\main\\resources\\storage\\";
 
     public String uploadImage(MultipartFile file) throws IOException {
-
         ImageData imageData = storageRepository.save(ImageData.builder()
                 .name(file.getOriginalFilename())
                 .type(file.getContentType())
                 .imageData(ImageUtils.compressImage(file.getBytes())).build());
 
-        if(imageData != null){
+        if (imageData != null) {
             return "file uploaded successfully : " + imageData.getName();
         }
 
@@ -50,11 +52,17 @@ public class StorageService {
         return imageData.map(data -> ImageUtils.decompressImage(data.getImageData())).orElse(null);
     }
 
-    public Optional<FileData> uploadImageToFileSystem(MultipartFile file) throws IOException {
+    public Optional<FileData> uploadImageToFileSystem(MultipartFile file, String subPath) throws IOException {
+        String uniqueFileName = generateUniqueFileName(file.getOriginalFilename());
+        String filePath = BASE_FOLDER_PATH + subPath + "\\" + uniqueFileName;
 
-        String filePath = FOLDER_PATH + file.getOriginalFilename();
+        File directory = new File(BASE_FOLDER_PATH + subPath);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
         FileData fileData = storageFileRepository.save(FileData.builder()
-                .name(file.getOriginalFilename())
+                .name(uniqueFileName)
                 .type(file.getContentType())
                 .filePath(filePath).build()
         );
@@ -78,9 +86,10 @@ public class StorageService {
         }
         return ResponseEntity.notFound().build();
     }
-    public void deleteImageFromFileSystem(String photoUrl) throws IOException {
+
+    public void deleteImageFromFileSystem(String photoUrl, String subPath) throws IOException {
         String fileName = photoUrl.substring(photoUrl.lastIndexOf('/') + 1);
-        String filePath = FOLDER_PATH + fileName;
+        String filePath = BASE_FOLDER_PATH + subPath + "\\" + fileName;
 
         Path imagePath = new File(filePath).toPath();
         if (!Files.exists(imagePath)) {
@@ -97,4 +106,27 @@ public class StorageService {
         }
     }
 
+    private String generateUniqueFileName(String originalFileName) {
+        String fileExtension = getFileExtension(originalFileName);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String timestamp = formatter.format(new Date()); // Obtém a data atual formatada
+        String originalNameWithoutExtension = getFileNameWithoutExtension(originalFileName);
+        return originalNameWithoutExtension + "_" + timestamp + (fileExtension.isEmpty() ? "" : "." + fileExtension);
+    }
+
+    private String getFileExtension(String fileName) {
+        int lastIndexOfDot = fileName.lastIndexOf('.');
+        if (lastIndexOfDot > 0 && lastIndexOfDot < fileName.length() - 1) {
+            return fileName.substring(lastIndexOfDot + 1);
+        }
+        return "";
+    }
+
+    private String getFileNameWithoutExtension(String fileName) {
+        int lastIndexOfDot = fileName.lastIndexOf('.');
+        if (lastIndexOfDot > 0) {
+            return fileName.substring(0, lastIndexOfDot);
+        }
+        return fileName;
+    }
 }

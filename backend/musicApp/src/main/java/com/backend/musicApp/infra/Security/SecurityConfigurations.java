@@ -67,7 +67,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/user/fetch/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/playlist/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/artist/create").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/images/artists/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/images/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
