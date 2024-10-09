@@ -25,22 +25,28 @@ export default function DeleteArtistModal({ onClose, open, artistId, setUpdateAr
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState(''); 
+  const [errorMessage, setErrorMessage] = useState(''); 
 
   const handleDelete = async () => {
     try {
       await api.post(`/artist/delete/${artistId}`);
+      setErrorMessage('');
       setSnackbarMessage('Artist deleted successfully!');
       setSnackbarSeverity('success');
       setUpdateArtists(true); 
       onClose();
     } catch (error) {
-      console.error('Error deleting artist:', error);
-      setSnackbarMessage('Failed to delete artist. Please try again.');
-      console.log(error);
-      setSnackbarSeverity('error');
-    } finally {
-      setSnackbarOpen(true);
-    }
+      const { errorMessage} = error.response.data; 
+      if (errorMessage === "FOREIGN_KEY_VIOLATION") {
+        setErrorMessage("It is not possible to delete the entity because there are dependent records.");
+        setSnackbarMessage(''); 
+      } else {
+        setSnackbarMessage('Failed to delete artist. Please try again.');
+        setSnackbarSeverity('error');
+        setErrorMessage(''); 
+        setSnackbarOpen(true);
+      }
+    }  
   };
 
   const handleSnackbarClose = () => {
@@ -77,6 +83,17 @@ export default function DeleteArtistModal({ onClose, open, artistId, setUpdateAr
             Are you sure you want to delete this artist? This action cannot be undone.
           </Typography>
 
+          {errorMessage && (
+            <Alert 
+              severity="error" 
+              sx={{ mt: 2 }} 
+              icon={<ErrorIcon sx={{ color: 'white' }} />} 
+              style={{ backgroundColor: '#f44336', color: '#fff' }} 
+            >
+              {errorMessage}
+            </Alert>
+          )}
+
           <Button
             onClick={handleDelete}
             variant="contained"
@@ -93,6 +110,7 @@ export default function DeleteArtistModal({ onClose, open, artistId, setUpdateAr
             Cancel
           </Button>
         </Box>
+
       </Modal>
 
       <Snackbar

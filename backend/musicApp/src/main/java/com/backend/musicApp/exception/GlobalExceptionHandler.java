@@ -2,6 +2,7 @@ package com.backend.musicApp.exception;
 
 import com.backend.musicApp.dto.ErrorResourceAlreadyExistsDto;
 import com.backend.musicApp.dto.ErrorResponseDto;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -98,5 +99,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
 
         return new ResponseEntity<>(errorResponseDTO, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponseDto> handleForeignKeyConstraintViolation(DataIntegrityViolationException ex
+    , WebRequest webRequest) {
+
+        ErrorResponseDto errorResponse = new ErrorResponseDto(
+                webRequest.getDescription(false),
+                HttpStatus.BAD_REQUEST,
+                "FOREIGN_KEY_VIOLATION",
+                LocalDateTime.now()
+
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

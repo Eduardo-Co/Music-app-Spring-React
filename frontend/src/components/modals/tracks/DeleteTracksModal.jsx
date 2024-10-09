@@ -29,16 +29,22 @@ export default function DeleteTrackModal({ onClose, open, trackId, setUpdateTrac
   const handleDelete = async () => {
     try {
       await api.post(`/track/delete/${trackId}`);
+      setErrorMessage('');
       setSnackbarMessage('Track deleted successfully!');
       setSnackbarSeverity('success');
       setUpdateTracks(true); 
       onClose();
     } catch (error) {
-      console.error('Error deleting track:', error);
-      setSnackbarMessage('Failed to delete track. Please try again.');
-      setSnackbarSeverity('error');
-    } finally {
-      setSnackbarOpen(true);
+      const { errorMessage} = error.response.data; 
+      if (errorMessage === "FOREIGN_KEY_VIOLATION") {
+        setErrorMessage("It is not possible to delete the entity because there are dependent records.");
+        setSnackbarMessage(''); 
+      } else {
+        setSnackbarMessage('Failed to delete artist. Please try again.');
+        setSnackbarSeverity('error');
+        setErrorMessage(''); 
+        setSnackbarOpen(true);
+      }
     }
   };
 
@@ -75,6 +81,17 @@ export default function DeleteTrackModal({ onClose, open, trackId, setUpdateTrac
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             Are you sure you want to delete this track? This action cannot be undone.
           </Typography>
+
+          {errorMessage && (
+            <Alert 
+              severity="error" 
+              sx={{ mt: 2 }} 
+              icon={<ErrorIcon sx={{ color: 'white' }} />} 
+              style={{ backgroundColor: '#f44336', color: '#fff' }} 
+            >
+              {errorMessage}
+            </Alert>
+          )}
 
           <Button
             onClick={handleDelete}
